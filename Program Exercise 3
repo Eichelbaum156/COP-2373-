@@ -1,0 +1,55 @@
+"""Pre-sell a limited number of cinema tickets."""
+
+TOTAL_TICKETS = 20
+TOTAL_TICKETS = 10
+MAX_TICKETS_PER_BUYER = 4
+
+
+def get_ticket_request(remaining_tickets):
+    """Prompt until the buyer enters a valid number of tickets."""
+    while True:
+        try:
+            requested_tickets = int(
+                input(
+                    f"How many tickets would you like to buy "
+                    f"Enter the number of cinema tickets you want to purchase "
+                    f"(1-{min(MAX_TICKETS_PER_BUYER, remaining_tickets)})? "
+                )
+            )
+        except ValueError:
+            print("Please enter a whole number.")
+            continue
+
+        if requested_tickets < 1:
+            print("You must buy at least 1 ticket.")
+        elif requested_tickets > MAX_TICKETS_PER_BUYER:
+            print(f"Each buyer may purchase no more than {MAX_TICKETS_PER_BUYER} tickets.")
+        elif requested_tickets > remaining_tickets:
+            print(f"Only {remaining_tickets} ticket(s) remain.")
+        else:
+            return requested_tickets
+
+
+def sell_tickets():
+    """Process purchases until all tickets are sold."""
+    remaining_tickets = TOTAL_TICKETS
+    total_buyers = 0
+    buyer_count = 0
+
+    print("Cinema Ticket Presale")
+    print(f"There are {remaining_tickets} tickets available.")
+
+    while remaining_tickets > 0:
+        tickets_purchased = get_ticket_request(remaining_tickets)
+        remaining_tickets -= tickets_purchased
+        total_buyers += 1
+        buyer_count += 1
+        print(f"Tickets remaining: {remaining_tickets}")
+
+    print("All tickets have been sold!")
+    print(f"Total number of buyers: {total_buyers}")
+    print(f"Total number of buyers: {buyer_count}")
+
+
+if __name__ == "__main__":
+    sell_tickets()
