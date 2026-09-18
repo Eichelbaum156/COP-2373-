@@ -1,0 +1,104 @@
+"""COP 2373: score an email using 30 researched spam indicators."""
+
+
+def get_keywords():
+    """Return exactly 30 distinct spam words and phrases."""
+    # Research: Jennings, HubSpot, updated September 5, 2025.
+    # https://blog.hubspot.com/blog/tabid/6307/bid/30684/the-ultimate-list-of-email-spam-trigger-words.aspx
+    return [
+        "additional income", "be your own boss", "earn extra cash",
+        "expect to earn", "extra income", "home employment",
+        "income from home", "make money", "money making",
+        "online biz opportunity", "potential earnings", "while you sleep",
+        "work at home", "work from home", "best price",
+        "big bucks", "cash bonus", "cents on the dollar",
+        "fast cash", "hidden assets", "incredible deal",
+        "lowest price", "million dollars", "money back",
+        "no cost", "no fees", "pure profit",
+        "serious cash", "no credit check", "no investment",
+    ]
+
+
+def read_message():
+    """Read a multiline email; a line containing only END finishes input."""
+    print("Enter your email message. Type END on its own line to finish:")
+    lines = []
+
+    # Preserve blank lines so users can paste complete email messages.
+    while True:
+        try:
+            line = input()
+        except EOFError:
+            break
+        if line.strip() == "END":
+            break
+        lines.append(line)
+
+    return "\n".join(lines)
+
+
+def scan_message(message, keywords):
+    """Return the total occurrence count and a dictionary of matched terms."""
+    import re
+
+    # Collapse whitespace and ignore case while preserving punctuation.
+    normalized_message = " ".join(message.casefold().split())
+    score = 0
+    matches = {}
+
+    for keyword in keywords:
+        # Word boundaries prevent matches inside longer words.
+        pattern = r"\b" + re.escape(keyword) + r"\b"
+        count = len(re.findall(pattern, normalized_message))
+        if count > 0:
+            matches[keyword] = count
+            score += count
+
+    return score, matches
+
+
+def rate_spam(score):
+    """Return a qualitative likelihood using the assignment's point score."""
+    # These classroom thresholds are rules, not statistical probabilities.
+    if score == 0:
+        return "Low (no listed indicators found)"
+    if score <= 2:
+        return "Possible spam"
+    if score <= 5:
+        return "Likely spam"
+    return "High likelihood of spam"
+
+
+def display_results(score, likelihood, matches):
+    """Display the score, rating, and each matched term with its count."""
+    print(f"\nSpam score: {score}")
+    print(f"Spam likelihood: {likelihood}")
+    print("Matched words/phrases:")
+
+    if matches:
+        for keyword, count in matches.items():
+            print(f"  - {keyword}: {count}")
+    else:
+        print("  None")
+    print("Note: This keyword rating is not a guarantee or a probability.")
+
+
+def main():
+    """Coordinate input, validation, analysis, and output."""
+    print("Email Spam Checker")
+    message = read_message()
+
+    # An empty message cannot be meaningfully rated.
+    if not message.strip():
+        print("No email text entered. Run the program again with a message.")
+        return
+
+    keywords = get_keywords()
+    score, matches = scan_message(message, keywords)
+    likelihood = rate_spam(score)
+    display_results(score, likelihood, matches)
+
+
+# Keep all program logic in functions; this guard only starts the program.
+if __name__ == "__main__":
+    main()
