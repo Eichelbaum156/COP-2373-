@@ -1,0 +1,106 @@
+# Name: Ean Eichelbaum
+# Date: September 24, 2026
+# Program: Monthly Expense Analyzer
+# Description:
+# This program asks the user to enter monthly expenses.
+# It uses reduce() to calculate the total, highest, and lowest
+# expenses and displays the expense names and amounts.
+
+from functools import reduce
+
+
+# This function collects expense names and amounts from the user.
+def get_expenses():
+    expenses = []
+
+    # Ask how many expenses the user wants to enter.
+    while True:
+        try:
+            number_of_expenses = int(
+                input("How many monthly expenses would you like to enter? ")
+            )
+
+            if number_of_expenses > 0:
+                break
+            else:
+                print("Please enter at least 1 expense.")
+        except ValueError:
+            print("Please enter a whole number.")
+
+    # Collect the name and amount of each expense.
+    for count in range(number_of_expenses):
+        print(f"\nExpense #{count + 1}")
+
+        expense_type = input("Enter the type of expense: ")
+
+        while True:
+            try:
+                amount = float(input("Enter the expense amount: $"))
+
+                if amount >= 0:
+                    break
+                else:
+                    print("Please enter an amount that is 0 or greater.")
+            except ValueError:
+                print("Please enter a valid number.")
+
+        expenses.append((expense_type, amount))
+
+    return expenses
+
+
+# This function uses reduce() to calculate the total expense.
+def calculate_total(expenses):
+    total = reduce(
+        lambda current_total, expense: current_total + expense[1],
+        expenses,
+        0
+    )
+
+    return total
+
+
+# This function uses reduce() to find the highest expense.
+def find_highest(expenses):
+    highest = reduce(
+        lambda current, expense:
+        expense if expense[1] > current[1] else current,
+        expenses
+    )
+
+    return highest
+
+
+# This function uses reduce() to find the lowest expense.
+def find_lowest(expenses):
+    lowest = reduce(
+        lambda current, expense:
+        expense if expense[1] < current[1] else current,
+        expenses
+    )
+
+    return lowest
+
+
+# This function displays the calculated expense information.
+def display_results(total, highest, lowest):
+    print("\n--- Monthly Expense Summary ---")
+    print(f"Total Expenses: ${total:,.2f}")
+    print(f"Highest Expense: {highest[0]} - ${highest[1]:,.2f}")
+    print(f"Lowest Expense: {lowest[0]} - ${lowest[1]:,.2f}")
+
+
+# Main function controls the program.
+def main():
+    expenses = get_expenses()
+
+    total = calculate_total(expenses)
+    highest = find_highest(expenses)
+    lowest = find_lowest(expenses)
+
+    display_results(total, highest, lowest)
+
+
+# Start the program.
+if __name__ == "__main__":
+    main()
