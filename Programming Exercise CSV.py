@@ -1,4 +1,6 @@
-"""Write and display student exam grades using CSV files.
+"""Programming Exercise CSV
+
+Write and display student exam grades using CSV files.
 
 Author: Ean Eichelbaum
 Date: November 1, 2026
